@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMI Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="background-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <main class="calculator-container">
+    <header class="calc-header">
+      <div class="icon-badge">⚖️</div>
+      <h1>BMI Calculator</h1>
+      <p class="subtitle">Calculate your Body Mass Index and find your ideal healthy weight.</p>
+    </header>
+
+    <!-- Unit Toggle -->
+    <div class="unit-toggle" role="radiogroup" aria-label="Measurement Units">
+      <button type="button" class="toggle-btn active" id="unit-metric" data-unit="metric">
+        Metric (kg / cm)
+      </button>
+      <button type="button" class="toggle-btn" id="unit-imperial" data-unit="imperial">
+        Imperial (lbs / ft & in)
+      </button>
+    </div>
+
+    <!-- Input Form -->
+    <form id="bmi-form" novalidate>
+      <!-- Metric Inputs -->
+      <div id="metric-inputs" class="input-group-wrapper active">
+        <div class="input-field">
+          <label for="metric-height">Height</label>
+          <div class="input-control">
+            <input 
+              type="number" 
+              id="metric-height" 
+              placeholder="e.g. 175" 
+              min="50" 
+              max="280" 
+              step="0.1" 
+              required 
+            />
+            <span class="unit-label">cm</span>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label for="metric-weight">Weight</label>
+          <div class="input-control">
+            <input 
+              type="number" 
+              id="metric-weight" 
+              placeholder="e.g. 70" 
+              min="20" 
+              max="400" 
+              step="0.1" 
+              required 
+            />
+            <span class="unit-label">kg</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Imperial Inputs -->
+      <div id="imperial-inputs" class="input-group-wrapper">
+        <div class="input-field-multi">
+          <label>Height</label>
+          <div class="multi-inputs">
+            <div class="input-control">
+              <input 
+                type="number" 
+                id="imperial-height-ft" 
+                placeholder="5" 
+                min="1" 
+                max="8" 
+                step="1" 
+              />
+              <span class="unit-label">ft</span>
+            </div>
+            <div class="input-control">
+              <input 
+                type="number" 
+                id="imperial-height-in" 
+                placeholder="9" 
+                min="0" 
+                max="11" 
+                step="0.1" 
+              />
+              <span class="unit-label">in</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label for="imperial-weight">Weight</label>
+          <div class="input-control">
+            <input 
+              type="number" 
+              id="imperial-weight" 
+              placeholder="e.g. 155" 
+              min="40" 
+              max="800" 
+              step="0.1" 
+            />
+            <span class="unit-label">lbs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="calculate-btn">
+          Calculate BMI
+        </button>
+        <button type="button" class="btn btn-secondary" id="reset-btn">
+          Reset
+        </button>
+      </div>
+
+      <div id="error-message" class="error-banner" hidden>
+        Please enter valid positive values for height and weight.
+      </div>
+    </form>
+
+    <!-- Results Section -->
+    <section id="results-card" class="results-card hidden" aria-live="polite">
+      <div class="result-summary">
+        <span class="result-label">Your BMI is</span>
+        <div class="bmi-score-container">
+          <span id="bmi-value" class="bmi-value">--</span>
+          <span id="bmi-category" class="bmi-category">--</span>
+        </div>
+      </div>
+
+      <!-- BMI Spectrum Gauge -->
+      <div class="spectrum-container">
+        <div class="spectrum-bar">
+          <div class="segment underweight" title="Underweight (&lt; 18.5)"></div>
+          <div class="segment normal" title="Normal (18.5 - 24.9)"></div>
+          <div class="segment overweight" title="Overweight (25 - 29.9)"></div>
+          <div class="segment obese" title="Obese (≥ 30)"></div>
+          <div id="spectrum-pointer" class="spectrum-pointer" style="left: 0%;">
+            <div class="pointer-pin"></div>
+          </div>
+        </div>
+        <div class="spectrum-legend">
+          <span>&lt; 18.5<br><small>Under</small></span>
+          <span>18.5 - 24.9<br><small>Normal</small></span>
+          <span>25.0 - 29.9<br><small>Over</small></span>
+          <span>≥ 30.0<br><small>Obese</small></span>
+        </div>
+      </div>
+
+      <!-- Healthy Range & Insights -->
+      <div class="insights-grid">
+        <div class="insight-box">
+          <span class="insight-title">Healthy Weight Range</span>
+          <span id="ideal-range" class="insight-value">--</span>
+        </div>
+        <div class="insight-box">
+          <span class="insight-title">Health Suggestion</span>
+          <span id="bmi-advice" class="insight-value">--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reference Table Info -->
+    <footer class="calc-footer">
+      <details>
+        <summary>View WHO BMI Categories Reference</summary>
+        <table class="category-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>BMI Range</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="dot underweight-dot"></span> Underweight</td>
+              <td>&lt; 18.5</td>
+            </tr>
+            <tr>
+              <td><span class="dot normal-dot"></span> Normal weight</td>
+              <td>18.5 – 24.9</td>
+            </tr>
+            <tr>
+              <td><span class="dot overweight-dot"></span> Overweight</td>
+              <td>25.0 – 29.9</td>
+            </tr>
+            <tr>
+              <td><span class="dot obese-dot"></span> Obesity Class I</td>
+              <td>30.0 – 34.9</td>
+            </tr>
+            <tr>
+              <td><span class="dot obese-dot"></span> Obesity Class II</td>
+              <td>35.0 – 39.9</td>
+            </tr>
+            <tr>
+              <td><span class="dot obese-dot"></span> Obesity Class III (Severe)</td>
+              <td>≥ 40.0</td>
+            </tr>
+          </tbody>
+        </table>
+      </details>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
